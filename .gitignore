@@ -1,0 +1,17 @@
+# Dependency folders (ห้ามเอาขึ้นเด็ดขาด!)
+node_modules/
+
+# Local env files (ความลับฐานข้อมูล)
+.env
+
+# Uploaded files (รูปที่คนแจ้งเหตุเข้ามา - เก็บไว้ในเครื่องบอสพอ ไม่ต้องขึ้น GitHub)
+uploads/
+public/uploads/
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS specific files
+.DS_Store
