@@ -131,7 +131,7 @@ const getIncidents = async (req, res) => {
                     $maxDistance: parsedRadius * 1000 
                 }
             }
-        });
+        }).populate('reporterID', 'name');
 
         res.status(200).json({ 
             success: true,
@@ -264,11 +264,15 @@ const offerHelp = async (req, res) => {
 
         await incident.save();
 
+        const populatedIncident = await Incident.findById(incidentID).populate('reporterID', 'name').populate('volunteers.userID', 'name').lean();
+
         res.status(200).json({
             success: true,
             message: 'ส่งข้อเสนอความช่วยเหลือสำเร็จเรียบร้อยแล้ว',
-            data: incident
-        });
+            data: { 
+                ...populatedIncident, 
+                name: populatedIncident.reporterID?.name || 'ไม่ระบุชื่อ' }
+        });//// หน้าบ้านบอสเรียกใช้ .name ตรงๆ 
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'เกิดข้อผิดพลาดที่เซิร์ฟเวอร์' });
@@ -320,10 +324,15 @@ const respondToVolunteer = async (req, res) => {
 
         await incident.save();
 
+// ✨ ดึงชื่อกลับมาใหม่หลัง Save เพื่อส่งให้หน้าบ้านโชว์ชื่อต่อ
+        const populatedData = await Incident.findById(incident._id)
+            .populate('reporterID', 'name')
+            .populate('volunteers.userID', 'name');
+
         res.status(200).json({
             success: true,
             message: `ทำการ ${action === 'accept' ? 'ตอบรับ' : 'ปฏิเสธ'} อาสาสมัครเรียบร้อยแล้ว`,
-            data: incident
+            data: populatedData
         });
     } catch (error) {
         console.error(error);
