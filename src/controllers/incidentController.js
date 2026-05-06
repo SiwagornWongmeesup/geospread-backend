@@ -15,7 +15,7 @@ const createIncident = async (req, res) => {
         if (typeof userLocation === 'string') userLocation = JSON.parse(userLocation);
 
         console.log("ข้อมูลที่ได้รับจากหน้าเว็บ:", req.body);    
-        if (!title || !description || !location || !type || !severity || !impact || !userLocation) {
+        if (!title || !description || !location || !type || !severity || !userLocation) {
             return res.status(400).json({ message: 'กรุณากรอกข้อมูลให้ครบถ้วนทุกช่อง' });
         }
 
@@ -106,6 +106,41 @@ const createIncident = async (req, res) => {
         return res.status(500).json({ message: 'เกิดข้อผิดพลาดที่เซิร์ฟเวอร์' });
     }
 };
+
+// ฟังก์ชั่นดึงข้อมูลขอความช่วยเหลือใกล้เคียง
+const getNearbyIncidents = async (req, res) => {
+    try {
+        const { longitude, latitude, radius = 5000 } = req.query;
+
+        if (!longitude || !latitude) {
+            return res.status(400).json({ message: "ต้องมีพิกัดผู้ใช้" });
+        }
+
+        const incidents = await Incident.find({
+            location: {
+                $near: {
+                    $geometry: {
+                        type: "Point",
+                        coordinates: [parseFloat(longitude), parseFloat(latitude)]
+                    },
+                    $maxDistance: parseInt(radius) // meter
+                }
+            }
+        }).populate('reporterID', 'name');
+
+        return res.json({
+            success: true,
+            count: incidents.length,
+            data: incidents
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "server error" });
+    }
+};
+
+
 
 // ฟังก์ชั่นดึงข้อมูลรายงานเหตุการณ์
 const getIncidents = async (req, res) => {
@@ -346,5 +381,6 @@ module.exports = {
     updateIncidentStatus,
     acceptIncident,
     offerHelp,
-    respondToVolunteer
+    respondToVolunteer,
+    getNearbyIncidents
 }

@@ -38,17 +38,27 @@ const userSchema = new mongoose.Schema({
     provider: {
       type: String,
       enum: ['google', 'local'],
-      
+      required: true,
     },
+
+    // --- ส่วนสำหรับกู้ภัย (Rescuer Section) ---
 
     isVerified: {//ยืนยันตัวตน
       type: Boolean,
       default: false,
     },
 
-    verificationDoc: {
-      type: String,//เก็บ URL ของเอกสารยืนยันตัวตน เช่น บัตรประชาชน
+    rescuerDetails: {
+      organization: { type: String }, // สังกัดหน่วยงาน
+      licenseId: { type: String },    // เลขประจำตัวกู้ภัย
+      verifiedAt: { type: Date },     // วันที่แอดมินกดอนุมัติ
+      workStatus: {
+        type: String, 
+        enum: ['available', 'busy', 'offline'], 
+        default: 'offline' 
+        }
     },
+    // ------------------------------------
 
     status: {//สถานะผู้ใช้
       type: String,

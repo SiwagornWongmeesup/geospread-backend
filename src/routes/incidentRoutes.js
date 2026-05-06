@@ -10,7 +10,8 @@ const {
     updateIncidentStatus,
     acceptIncident,
     offerHelp,
-    respondToVolunteer
+    respondToVolunteer,
+    getNearbyIncidents
 } = require('../controllers/incidentController');
 
 // 🚩 1. 
@@ -24,6 +25,9 @@ router.post(
 
 // 🚩 2. 
 router.get('/', getIncidents);
+
+// 🚩 3. 
+router.get('/nearby', getNearbyIncidents);
 
 // อัพเดตสถานะหมุด (Admin เท่านั้น)
 router.put('/:id/status', auth, authorizeRoles(['admin']), updateIncidentStatus);
