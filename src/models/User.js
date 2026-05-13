@@ -35,11 +35,7 @@ const userSchema = new mongoose.Schema({
       default: 'user',
     },
 
-    provider: {
-      type: String,
-      enum: ['google', 'local'],
-      required: true,
-    },
+   
 
     // --- ส่วนสำหรับกู้ภัย (Rescuer Section) ---
 
