@@ -1,4 +1,4 @@
-# Dependency folders (ห้ามเอาขึ้นเด็ดขาด!)
+# Dependency folders 
 node_modules/
 
 # Local env files (ความลับฐานข้อมูล)
